@@ -13,12 +13,13 @@ class Signin extends Component {
     onEmailChange = (event) => {
         this.setState({signinEmail: event.target.value})
     };
+
     onPasswordChange = (event) => {
         this.setState({signinPassword: event.target.value})
     };
 
     onSubmit = () => {
-        console.log(this.state);
+        const {updateUserData} = this.props;
         fetch('http://localhost:3000/signin', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
@@ -28,8 +29,9 @@ class Signin extends Component {
             })
         })
             .then(resp => resp.json())
-            .then(data => {
-                    if (data === 'Success') {
+            .then(user => {
+                    if (user) {
+                        updateUserData(user);
                         this.props.onRouteChange('home');
                     }
                 }

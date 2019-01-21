@@ -15,7 +15,6 @@ const app = new Clarifai.App({
     apiKey: CLARIFAIAPIKEY
 });
 
-
 const particlesOptions = {
     particles: {
         number: {
@@ -33,9 +32,7 @@ const particlesOptions = {
             opacity: 1
         }
     },
-
 };
-
 
 class App extends Component {
 
@@ -46,10 +43,16 @@ class App extends Component {
             imageUrl: '',
             box: {},
             route: 'signin',
-            isSignedin: false
+            isSignedin: false,
+            user: {
+                id: '',
+                name: '',
+                email: '',
+                entries: 0,
+                joined: null
+            }
         }
     }
-
 
     calculateFaceLocation = (data) => {
         const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -88,17 +91,19 @@ class App extends Component {
 
     };
 
-    onRouteChange = (route) => {
-        this.setState({route: route});
-        if(route === 'signout') {
-            this.setState({isSignedin: false})
-        } else if (route === 'home'){
-            this.setState({isSignedin: true})
-        }
 
+    updateUserData = (user) => {
+        this.setState({user: user});
     };
 
-
+    onRouteChange = (route) => {
+        this.setState({route: route});
+        if (route === 'signout') {
+            this.setState({isSignedin: false})
+        } else if (route === 'home') {
+            this.setState({isSignedin: true})
+        }
+    };
 
     render() {
         const {isSignedin, imageUrl, route, box} = this.state;
@@ -112,16 +117,18 @@ class App extends Component {
                 {route === 'home' ?
                     <>
                         <Logo/>
-                        <Rank/>
+                        <Rank
+                            entries={this.state.user.entries}
+                            name={this.state.user.name}/>
                         < ImageLinkForm buttonSubmit={this.buttonSubmitHandler}
                                         onInputChange={this.inputChangeHandler}/>
                         <FaceRecognition box={box} imageUrl={imageUrl}/>
                     </>
                     : (
                         route === 'signin' ?
-                            <Signin onRouteChange={this.onRouteChange}/>
+                            <Signin updateUserData={this.updateUserData} onRouteChange={this.onRouteChange}/>
                             :
-                            <Register onRouteChange={this.onRouteChange}/>
+                            <Register updateUserData={this.updateUserData} onRouteChange={this.onRouteChange}/>
                     )
                 }
             </div>

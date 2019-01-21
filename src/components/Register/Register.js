@@ -30,6 +30,7 @@ class Register extends Component {
     };
 
     onRegisterSubmit = () => {
+        const {updateUserData} = this.props;
         const newUser = {
             name: this.state.registerName,
             password: this.state.registerPassword,
@@ -42,9 +43,13 @@ class Register extends Component {
             body: JSON.stringify(newUser)
         })
             .then(res => res.json())
-            .then(data => {
-                this.props.onRouteChange('home');
-                console.log(data)})
+            .then(user => {
+                if (user) {
+                    updateUserData(user);
+                    this.props.onRouteChange('home');
+                    console.log(user)
+                }
+            })
             .catch(err => console.log(err))
 
     };
