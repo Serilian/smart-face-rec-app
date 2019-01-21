@@ -70,13 +70,11 @@ class App extends Component {
         this.setState({box: box});
     };
 
-
     inputChangeHandler = (event) => {
         const inputValue = event.target.value;
         this.setState({
             input: inputValue
         });
-
     };
 
     buttonSubmitHandler = () => {
@@ -99,6 +97,7 @@ class App extends Component {
         }
 
     };
+
 
 
     render() {
