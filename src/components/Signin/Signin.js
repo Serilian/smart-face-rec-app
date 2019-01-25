@@ -30,9 +30,11 @@ class Signin extends Component {
         })
             .then(resp => resp.json())
             .then(user => {
-                    if (user) {
+                    if (user.id) {
                         updateUserData(user);
                         this.props.onRouteChange('home');
+                    } else {
+                        alert('Incorrect credentials');
                     }
                 }
             )

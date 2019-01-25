@@ -11,7 +11,6 @@ class Register extends Component {
         }
     }
 
-
     onNameChange = (event) => {
         this.setState({
             registerName: event.target.value
@@ -44,10 +43,11 @@ class Register extends Component {
         })
             .then(res => res.json())
             .then(user => {
-                if (user) {
+                if (user.id) {
                     updateUserData(user);
                     this.props.onRouteChange('home');
-                    console.log(user)
+                } else {
+                    alert(user);
                 }
             })
             .catch(err => console.log(err))
