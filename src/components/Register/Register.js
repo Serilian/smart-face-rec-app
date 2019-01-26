@@ -36,7 +36,7 @@ class Register extends Component {
             email: this.state.registerEmail
         };
 
-        fetch('http://localhost:3000/register', {
+        fetch('https://peaceful-journey-34211.herokuapp.com/register', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(newUser)
