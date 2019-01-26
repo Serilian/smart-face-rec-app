@@ -87,7 +87,7 @@ class App extends Component {
             .then(resp => resp.json())
             .then((response) => {
                 if (response) {
-                    fetch('https:/peaceful-journey-34211.herokuapp.com/image', {
+                    fetch('/image', {
                         method: 'post',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({id: this.state.user.id})
