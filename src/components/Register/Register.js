@@ -92,7 +92,7 @@ class Register extends Component {
                                     type="password"
                                     name="password"
                                     id="password"
-                                    minLength={'5'}
+                                    minLength="5"
                                 />
                             </div>
                         </fieldset>

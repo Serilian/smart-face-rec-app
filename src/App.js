@@ -13,11 +13,11 @@ import Register from './components/Register/Register';
 const particlesOptions = {
     particles: {
         number: {
-            value: 120
+            value: 70
         },
         density: {
             enable: true,
-            value_area: 800
+            value_area: 600
         },
         color: {
             value: ['#ffffff']
