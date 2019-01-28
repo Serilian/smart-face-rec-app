@@ -51,18 +51,6 @@ class App extends Component {
         this.state = initialState;
     }
 
-    loadUser = (data) => {
-        this.setState({
-            user: {
-                id: data.id,
-                name: data.name,
-                email: data.email,
-                entries: data.entries,
-                joined: data.joined
-            }
-        })
-    };
-
     calculateFacesLocations = (data) => {
         const image = document.getElementById('inputImage');
         const width = Number(image.width);
