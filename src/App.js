@@ -32,7 +32,7 @@ const particlesOptions = {
 const initialState = {
     input: '',
     imageUrl: '',
-    box: {},
+    boxes: [],
     route: 'signin',
     isSignedin: false,
     user: {
@@ -40,7 +40,7 @@ const initialState = {
         name: '',
         email: '',
         entries: 0,
-        joined: null
+        joined: ''
     }
 };
 
@@ -51,28 +51,41 @@ class App extends Component {
         this.state = initialState;
     }
 
-    calculateFaceLocation = (data) => {
-        const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+    loadUser = (data) => {
+        this.setState({
+            user: {
+                id: data.id,
+                name: data.name,
+                email: data.email,
+                entries: data.entries,
+                joined: data.joined
+            }
+        })
+    };
+
+    calculateFacesLocations = (data) => {
         const image = document.getElementById('inputImage');
         const width = Number(image.width);
         const height = Number(image.height);
-        return {
-            leftCol: clarifaiFace.left_col * width,
-            topRow: clarifaiFace.top_row * height,
-            rightCol: width - (clarifaiFace.right_col * width),
-            bottomRow: height - (clarifaiFace.bottom_row * height)
-        }
+
+
+        return data.outputs[0].data.regions.map(face => {
+            let clarifaiFace = face.region_info.bounding_box;
+            return {
+                leftCol: clarifaiFace.left_col * width,
+                topRow: clarifaiFace.top_row * height,
+                rightCol: width - (clarifaiFace.right_col * width),
+                bottomRow: height - (clarifaiFace.bottom_row * height)
+            };
+        })
     };
 
-    displayFaceBox = (box) => {
-        this.setState({box: box});
+    displayFaceBoxes = (boxes) => {
+        this.setState({boxes: boxes});
     };
 
-    inputChangeHandler = (event) => {
-        const inputValue = event.target.value;
-        this.setState({
-            input: inputValue
-        });
+    onInputChange = (event) => {
+        this.setState({input: event.target.value});
     };
 
     buttonSubmitHandler = () => {
@@ -92,21 +105,16 @@ class App extends Component {
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({id: this.state.user.id})
                     })
-                        .then(resp => resp.json())
+                        .then(response => response.json())
                         .then(count => {
-                            this.setState({
-                                user: {
-                                    ...this.state.user,
-                                    entries: count
-                                }
-                            })
+                            this.setState(Object.assign(this.state.user, {entries: count}))
                         })
-                        .catch(err => console.log(err));
-                }
-                this.displayFaceBox(this.calculateFaceLocation(response))
-            })
-            .catch(err => console.log(err))
+                        .catch(console.log)
 
+                }
+                this.displayFaceBoxes(this.calculateFacesLocations(response))
+            })
+            .catch(err => console.log(err));
     };
 
     updateUserData = (user) => {
@@ -123,7 +131,7 @@ class App extends Component {
     };
 
     render() {
-        const {isSignedin, imageUrl, route, box} = this.state;
+        const {isSignedin, imageUrl, route, boxes} = this.state;
         return (
             <div className="App">
                 <Particles className="particles"
@@ -138,8 +146,8 @@ class App extends Component {
                             entries={this.state.user.entries}
                             name={this.state.user.name}/>
                         < ImageLinkForm buttonSubmit={this.buttonSubmitHandler}
-                                        onInputChange={this.inputChangeHandler}/>
-                        <FaceRecognition box={box} imageUrl={imageUrl}/>
+                                        onInputChange={this.onInputChange}/>
+                        <FaceRecognition boxes={boxes} imageUrl={imageUrl}/>
                     </>
                     : (
                         route === 'signin' ?
